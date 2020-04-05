@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Owlganizer</string>
+
+    <!-- **** Form Labels **** -->
+    <string name="title_label">Title</string>
+    <string name="start_date_label">Start Date</string>
+    <string name="end_date_label">End Date</string>
+    <!-- **** End Form Labels **** -->
+
+    <!-- **** Button Text **** -->
+    <string name="button_save">Save</string>
+    <string name="button_close">Close</string>
+    <string name="button_delete">Delete</string>
+    <!-- **** End Button Text **** -->
+
+    <!-- **** Form Hints **** -->
+    <string name="new_term_title_hint">Enter a title for your new term here</string>
+    <string name="new_term_start_hint">When does your new term start?</string>
+    <string name="new_term_end_hint">When does your new term end?</string>
+    <string name="detail_term_title_hint"> Selected Term Title </string>
+    <string name="detail_term_start_hint"> Selected Term Start Date </string>
+    <string name="detail_term_end_hint"> Selected Term End Date </string>
+    <!-- **** End Form Hints **** -->
+</resources>
