@@ -3,6 +3,8 @@ package com.cearo.owlganizer.activities;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.DatePicker;
@@ -59,56 +61,112 @@ public class NewTermActivity extends AppCompatActivity
             and assign the listener. The only reason to do it this way is to keep it DRY.
          */
         // Array of fields
-        EditText[] dateFields = {binding.newTermStart, binding.newTermEnd};
+        EditText[] formFields = {binding.newTermTitle, binding.newTermStart, binding.newTermEnd};
         // Iterating over each EditText
-        for (EditText field : dateFields) {
+        for (EditText field : formFields) {
             // Setting a listener on each field
-            field.setOnTouchListener((view, event) -> {
-                // Capturing the ID of the field that triggered the listener.
-                inputSelectedId = field.getId();
-                // This ensures there is only one DatePicker by binding the creation to one event
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // Creating the new DatePickerFragment
-                    DatePickerFragment datePicker = new DatePickerFragment();
-                    // Show the fragment
-                    datePicker.show(getSupportFragmentManager(),
-                            "FRAGMENT_TAG_MAX_ONE_INSTANCE");
+            if (field.equals(binding.newTermStart) || field.equals(binding.newTermEnd)) {
+
+                field.setOnTouchListener((view, event) -> {
+                    // Capturing the ID of the field that triggered the listener.
+                    inputSelectedId = field.getId();
+                    // This ensures there is only one DatePicker by binding the creation to one event
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        // Creating the new DatePickerFragment
+                        DatePickerFragment datePicker = new DatePickerFragment();
+                        // Show the fragment
+                        datePicker.show(getSupportFragmentManager(),
+                                "FRAGMENT_TAG_MAX_ONE_INSTANCE");
+                    }
+                    return false;
+                });
+            }
+            /*
+                Adding Text Changed Listeners to each input field to analyze if the data the user
+                is inputting is valid and different from what is currently stored in the object.
+                If the new values are different, saving will be enabled and otherwise disabled.
+             */
+            field.addTextChangedListener(new TextWatcher() {
+
+                boolean isFieldBlank = false;
+
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    isFieldBlank = count == s.length() && after == 0;
                 }
-                return false;
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Currently don't need to do anything when the text actually changes.
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO: Figure out how to make field validation reusable. Custom interface?
+                    if (isFieldBlank) {
+                        final String ERR_FIELD_BLANK = "Field cannot be blank!";
+                        field.setError(ERR_FIELD_BLANK);
+                    }
+                    else field.setError(null);
+                    binding.newTermSave.setEnabled(!isFieldBlank);
+                }
             });
         }
 
         // Setting the onClickListener for the Save Button action
         binding.newTermSave.setOnClickListener(view -> {
-            // **** Gathering form data *****
-            String title = binding.newTermTitle.getText().toString();
-            String startDate = binding.newTermStart.getText().toString();
-            String endDate = binding.newTermEnd.getText().toString();
-            // **** End gathering form data ****
+            // Representing if an input field is blank.
+            boolean nullFieldDetected = false;
+            // Iterating over all fields
+            for (EditText field : formFields) {
+                // Detecting blank field
+                if (field.getText().toString().matches("")) {
+                    // Field is blank
+                    nullFieldDetected = true;
+                    // Disabling further save attempts until resolved.
+                    binding.newTermSave.setEnabled(false);
+                    // Error message
+                    final String MESSAGE = "Field cannot be blank!";
+                    field.setError(MESSAGE);
+                }
+            }
+            // As long as no null fields are detected, continue with the operation.
+            if (!nullFieldDetected) {
 
-            // **** Transforming date form field text into LocalDate objects ****
+                // **** Gathering form data *****
+                String title = binding.newTermTitle.getText().toString();
+                String startDate = binding.newTermStart.getText().toString();
+                String endDate = binding.newTermEnd.getText().toString();
+                // **** End gathering form data ****
 
-            // dateFormat represents the format of the data coming in for a formatter
-            final String dateFormat = "MMM dd, yyyy";
-            // A formatter using the dateFormat String
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-            // Creating the LocalDate objects
-            LocalDate localStartDate = LocalDate.parse(startDate, formatter);
-            LocalDate localEndDate = LocalDate.parse(endDate, formatter);
+                // **** Transforming date form field text into LocalDate objects ****
 
-            // **** End Text to LocalDate transformation ****
+                // dateFormat represents the format of the data coming in for a formatter
+                final String dateFormat = "MMM dd, yyyy";
+                // A formatter using the dateFormat String
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+                // Creating the LocalDate objects
+                LocalDate localStartDate = LocalDate.parse(startDate, formatter);
+                LocalDate localEndDate = LocalDate.parse(endDate, formatter);
 
-            // Creating the new Term object to be inserted.
-            Term newTerm = new Term(title, localStartDate, localEndDate);
+                // **** End Text to LocalDate transformation ****
 
-            // ViewModel for inserting the new Term
-            TermViewModel viewModel = new ViewModelProvider(this).get(TermViewModel.class);
-            // Inserting the new Term
-            viewModel.insertTerm(newTerm);
-            // Transitioning back to the MainActivity
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+                // Creating the new Term object to be inserted.
+                Term newTerm = new Term(title, localStartDate, localEndDate);
+
+                // ViewModel for inserting the new Term
+                TermViewModel viewModel = new ViewModelProvider(this).get(TermViewModel.class);
+                // Inserting the new Term
+                viewModel.insertTerm(newTerm);
+                // Transitioning back to the MainActivity
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
         });
+
+        // Disabled by default. All fields should have values before enabled.
+        binding.newTermSave.setEnabled(false);
 
         // **** End Setting Interaction Listeners ****
         setContentView(binding.getRoot());

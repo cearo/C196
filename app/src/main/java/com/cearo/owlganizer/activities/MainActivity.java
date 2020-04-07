@@ -21,20 +21,22 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements ItemClickListener {
 
     // Tag for logging
-    private final String TAG = "MainActivity";
+    private final String TAG = MainActivity.class.getSimpleName();
     // View-binding for activity_main.xml layout
     private ActivityMainBinding activityMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Obtaining a ViewModel
+        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+        // LayoutInflater to inflate bindings
         LayoutInflater layoutInflater = LayoutInflater.from(this);
+        // Inflating activity_main.xml.
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater);
 
         // **** Begin RecyclerView setup ****
 
-        // Obtaining a ViewModel
-        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
         // Using the ViewModel to retrieve the LiveData<List<Terms>> then extracting the List
         List<Term> allTerms = termViewModel.getAllTerms().getValue();
 
@@ -67,25 +69,24 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
     @Override
     public void onClick(View view, int position) {
+        // Getting the ViewModel
         TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+        // Getting the LiveData list of terms
         List<Term> allTerms = termViewModel.getAllTerms().getValue();
+        // Initializing here so I can set while null checking allTerms.
         Term termSelected = null;
-//        String termTitle = null;
-//        String termStart = null;
-//        String termEnd = null;
+        // Null safety
         if (allTerms != null) {
+            // Getting the Term the user selected from the UI.
             termSelected = allTerms.get(position);
         }
+        // Null Safety
         if (termSelected != null) {
+            // Getting the Term ID to pass to the TermDetailActivity
             long termId = termSelected.getTermId();
-//            termTitle = termSelected.getTitle();
-//            termStart = termSelected.getStartDate().toString();
-//            termEnd = termSelected.getEndDate().toString();
+            // Passing the ID and changing screens
             Intent intent = new Intent(this, TermDetailActivity.class);
             intent.putExtra("termId", termId);
-//            intent.putExtra("termTitle", termTitle);
-//            intent.putExtra("termStart", termStart);
-//            intent.putExtra("termEnd", termEnd);
             startActivity(intent);
         }
     }

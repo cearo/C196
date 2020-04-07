@@ -52,4 +52,8 @@ public class TermViewModel extends AndroidViewModel {
     public void deleteTerm(Term term) {
         termRepository.deleteTerm(term);
     }
+
+    public LiveData<Term> getTermById(long id) {
+        return termRepository.getTermById(id);
+    }
 }
