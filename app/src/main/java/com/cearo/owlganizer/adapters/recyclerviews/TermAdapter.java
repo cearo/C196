@@ -1,4 +1,4 @@
-package com.cearo.owlganizer.adapter;
+package com.cearo.owlganizer.adapters.recyclerviews;
 
 import android.view.LayoutInflater;
 import android.view.View;

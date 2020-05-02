@@ -4,11 +4,15 @@
 
     <application
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.NewNoteActivity"></activity>
+        <activity android:name=".activities.NewAssessmentActivity" />
+        <activity android:name=".activities.CourseDetailActivity" />
         <activity android:name=".activities.TermDetailActivity" />
         <activity android:name=".activities.NewTermActivity" />
         <activity android:name=".activities.MainActivity">
@@ -18,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.NewCourseActivity" />
+        <activity android:name=".activities.AssessmentDetailActivity" />
     </application>
 
 </manifest>

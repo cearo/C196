@@ -9,7 +9,15 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.cearo.owlganizer.database.daos.AssessmentDao;
+import com.cearo.owlganizer.database.daos.CourseDao;
+import com.cearo.owlganizer.database.daos.MentorDao;
+import com.cearo.owlganizer.database.daos.NoteDao;
 import com.cearo.owlganizer.database.daos.TermDao;
+import com.cearo.owlganizer.models.Assessment;
+import com.cearo.owlganizer.models.Course;
+import com.cearo.owlganizer.models.Mentor;
+import com.cearo.owlganizer.models.Note;
 import com.cearo.owlganizer.models.Term;
 import com.cearo.owlganizer.utils.converters.Converters;
 
@@ -29,7 +37,9 @@ import java.util.concurrent.Executors;
 */
 
 // Room annotation declaring a database
-@Database(entities = {Term.class}, version = 1, exportSchema = false)
+@Database(entities = {Term.class, Course.class, Mentor.class, Note.class, Assessment.class},
+        version = 1,
+        exportSchema = false)
 // Room annotation declaring data type converters for Room to use
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
@@ -37,6 +47,10 @@ public abstract class AppDatabase extends RoomDatabase {
     // **** Getters for DAO's ****
 
     public abstract TermDao termDao();
+    public abstract CourseDao courseDao();
+    public abstract MentorDao mentorDao();
+    public abstract NoteDao noteDao();
+    public abstract AssessmentDao assessmentDao();
 
     // **** End Getters for DAO's ****
 
@@ -82,9 +96,19 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onCreate(db);
             // DB operations cannot be performed on the main thread
             databaseWriteExecutor.execute(() -> {
+                MentorDao mentorDao = INSTANCE.mentorDao();
                 TermDao termDao = INSTANCE.termDao();
 
                 // **** Begin Sample Data ****
+                Mentor mentor1 = new Mentor("John Porter",
+                        "385-428-5747", "john.porter@wgu.edu");
+                Mentor mentor2 = new Mentor("Dana Cobbs",
+                        "384-758-8459", "dana.cobbs@wgu.edu");
+                Mentor mentor3 = new Mentor("Amy Antonucci",
+                        "385-932-1275", "amy.antonucci@wgu.edu");
+                Mentor[] mentors = {mentor1, mentor2, mentor3};
+
+                mentorDao.insertMentors(mentors);
 
                 // Current date at the time the method is called
                 LocalDate startDate = LocalDate.now();

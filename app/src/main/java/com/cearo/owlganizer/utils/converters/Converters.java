@@ -34,4 +34,14 @@ public class Converters {
         DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
         return date != null ? date.format(dtFormat) : null;
     }
+
+//    @TypeConverter
+//    public static String toStringBuilder(String string) {
+//        return new StringBuilder(string);
+//    }
+//
+//    @TypeConverter
+//    public static String fromStringBuilder(String builder) {
+//        return builder != null ? builder.toString() : null;
+//    }
 }

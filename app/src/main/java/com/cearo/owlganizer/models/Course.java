@@ -3,12 +3,23 @@ package com.cearo.owlganizer.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
-@Entity(tableName = "courses")
+@Entity(tableName = "courses", foreignKeys =
+        {@ForeignKey(
+        entity = Term.class,
+        parentColumns = "term_id",
+        childColumns = "parent_term_id"
+    ),  @ForeignKey(
+        entity = Mentor.class,
+        parentColumns = "mentor_id",
+        childColumns = "course_mentor_id"
+    )}
+)
 public class Course {
 
     @PrimaryKey(autoGenerate = true)
@@ -29,9 +40,11 @@ public class Course {
     private String status;
     @ColumnInfo(name = "parent_term_id")
     private long parentTermId;
+    @ColumnInfo(name = "course_mentor_id")
+    private long courseMentorId;
 
     public Course(){};
-
+    @Ignore
     public Course(@NonNull String title, @NonNull LocalDate start,
                   @NonNull LocalDate end, @NonNull String status, long parentTermId) {
         this.title = title;
@@ -39,6 +52,17 @@ public class Course {
         this.endDate = end;
         this.status = status;
         this.parentTermId = parentTermId;
+        this.courseId = 0;
+    }
+    @Ignore
+    public Course(@NonNull String title, @NonNull LocalDate startDate, @NonNull LocalDate endDate,
+                  @NonNull String status, long parentTermId, long courseMentorId) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+        this.parentTermId = parentTermId;
+        this.courseMentorId = courseMentorId;
         this.courseId = 0;
     }
 
@@ -98,4 +122,11 @@ public class Course {
         this.parentTermId = parentTermId;
     }
 
+    public long getCourseMentorId() {
+        return courseMentorId;
+    }
+
+    public void setCourseMentorId(long courseMentorId) {
+        this.courseMentorId = courseMentorId;
+    }
 }

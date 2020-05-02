@@ -10,11 +10,27 @@ import java.util.List;
 
 public class TermsWithCourses {
 
-    @Embedded public Term term;
+    @Embedded private Term term;
     @Relation(
             parentColumn = "term_id",
             entityColumn = "parent_term_id",
             entity = Course.class
     )
-    public List<Course> courses;
+    private List<Course> courses;
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courseList) {
+        this.courses = courseList;
+    }
 }

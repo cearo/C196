@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- **** String Arrays **** -->
+    <string-array name="course_status_options">
+        <item>In Progress</item>
+        <item>Plan to Take</item>
+        <item>Completed</item>
+        <item>Dropped</item>
+    </string-array>
+    <!-- **** End String Arrays **** -->
+</resources>
