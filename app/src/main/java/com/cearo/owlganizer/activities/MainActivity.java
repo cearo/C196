@@ -6,14 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cearo.owlganizer.adapter.TermAdapter;
+import com.cearo.owlganizer.adapters.recyclerviews.TermAdapter;
 import com.cearo.owlganizer.databinding.ActivityMainBinding;
+import com.cearo.owlganizer.models.Mentor;
 import com.cearo.owlganizer.models.Term;
 import com.cearo.owlganizer.models.viewmodels.TermViewModel;
+import com.cearo.owlganizer.utils.Constants;
 import com.cearo.owlganizer.utils.listeners.ItemClickListener;
 
 import java.util.List;
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         super.onCreate(savedInstanceState);
         // Obtaining a ViewModel
         TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+
+        final LiveData<List<Mentor>> ALL_MENTORS = termViewModel.getAllMentors();
+
+        ALL_MENTORS.observe(this, Constants.ALL_MENTORS::addAll);
         // LayoutInflater to inflate bindings
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         // Inflating activity_main.xml.

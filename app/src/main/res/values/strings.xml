@@ -5,6 +5,18 @@
     <string name="title_label">Title</string>
     <string name="start_date_label">Start Date</string>
     <string name="end_date_label">End Date</string>
+    <string name="status_label">Status</string>
+    <string name="mentor_label">Mentor</string>
+    <string name="term_course_list_label">Courses This Term</string>
+    <string name="course_assessment_list_label">Course Assessments</string>
+    <string name="assessment_type_label">Type</string>
+    <string name="objective_assess_label">Objective</string>
+    <string name="performance_assess_label">Performance</string>
+    <string name="course_note_list_label">Course Notes</string>
+    <string name="course_mentor_email">Mentor Email</string>
+    <string name="course_mentor_name">Mentor Name</string>
+    <string name="course_mentor_phone">Mentor Phone</string>
+    <string name="note_body_label">Note:</string>
     <!-- **** End Form Labels **** -->
 
     <!-- **** Button Text **** -->
@@ -15,10 +27,25 @@
 
     <!-- **** Form Hints **** -->
     <string name="new_term_title_hint">Enter a title for your new term here</string>
+    <string name="new_course_title_hint">Enter a title for your new course here</string>
     <string name="new_term_start_hint">When does your new term start?</string>
+    <string name="new_course_start_hint">When does your new course start?</string>
     <string name="new_term_end_hint">When does your new term end?</string>
-    <string name="detail_term_title_hint"> Selected Term Title </string>
-    <string name="detail_term_start_hint"> Selected Term Start Date </string>
-    <string name="detail_term_end_hint"> Selected Term End Date </string>
+    <string name="new_course_end_hint">When does your new course end?</string>
+    <string name="new_course_status_hint">Select a status for this course</string>
+    <string name="new_course_mentor_hint">Select a Mentor for this course</string>
+    <string name="new_assessment_title_hint">Select a title for this assessment</string>
+    <string name="new_assessment_due_hint">Select a due date for this assessment</string>
+    <string name="new_note_title_hint">Enter a title for your new note here</string>
+    <string name="new_note_body_hint">Enter your note here</string>
+    <string name="detail_term_title_hint">Selected Term Title</string>
+    <string name="detail_course_title_hint">Selected Course Title</string>
+    <string name="detail_term_start_hint">Selected Term Start Date</string>
+    <string name="detail_course_start_hint">Selected Course Start Date</string>
+    <string name="detail_term_end_hint">Selected Term End Date</string>
+    <string name="detail_course_end_hint">Selected Course End Date</string>
+    <string name="due_date_label">Due Date</string>
     <!-- **** End Form Hints **** -->
+
+
 </resources>

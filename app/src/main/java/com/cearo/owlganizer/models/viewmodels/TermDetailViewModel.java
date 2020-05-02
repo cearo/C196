@@ -5,38 +5,72 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
+import com.cearo.owlganizer.database.relationships.TermsWithCourses;
+import com.cearo.owlganizer.database.repositories.CourseRepository;
 import com.cearo.owlganizer.database.repositories.TermRepository;
+import com.cearo.owlganizer.models.Course;
 import com.cearo.owlganizer.models.Term;
 
+import java.util.List;
+
 public class TermDetailViewModel extends AndroidViewModel {
+
+    private final MutableLiveData<Long> CURRENT_TERM_ID;
     // The Term this Detail View is for.
-    private LiveData<Term> currentTerm;
-    // Getting Repository for DB operations.
-    private TermRepository termRepository;
+    private final LiveData<Term> CURRENT_TERM;
+
+    private final LiveData<List<Course>> TERM_COURSES;
+    // Getting Repository for Term DB operations.
+    private final TermRepository TERM_REPO;
+    // Getting Repository for Course DB operations.
+    private final CourseRepository COURSE_REPO;
+
+
     // Constructor
     public TermDetailViewModel(@NonNull Application application) {
         super(application);
-        termRepository = new TermRepository(application);
+        this.TERM_REPO = new TermRepository(application);
+        this.COURSE_REPO = new CourseRepository(application);
+        CURRENT_TERM_ID = new MutableLiveData<>();
+        CURRENT_TERM = Transformations.switchMap(CURRENT_TERM_ID,
+                TERM_REPO::getTermById);
+        TERM_COURSES = Transformations.switchMap(CURRENT_TERM_ID,
+                COURSE_REPO::getCoursesByTerm);
     }
     // Returns the Term object backing the LiveData.
-    public Term getCurrentTerm() {
-        return this.currentTerm.getValue();
+    public LiveData<Term> getCurrentTerm() {
+        return this.CURRENT_TERM;
     }
     // Gets a Term from the DB by ID. If id is 0, it'll return the current LiveData object.
     public LiveData<Term> getTermById(long id) {
-        if (currentTerm == null && id != 0) {
-            currentTerm = termRepository.getTermById(id);
+        if (id != 0) {
+            CURRENT_TERM_ID.setValue(id);
         }
+        return this.CURRENT_TERM;
+    }
 
-        return this.currentTerm;
+    public LiveData<List<Course>> getTermCourses() {
+        return this.TERM_COURSES;
     }
     // Updates the Term's record in the DB.
     public void updateTerm(Term term) {
-        termRepository.updateTerm(term);
+        TERM_REPO.updateTerm(term);
     }
     // Deletes the Term's record from the DB.
     public void deleteTerm(Term term) {
-        termRepository.deleteTerm(term);
+        TERM_REPO.deleteTerm(term);
+    }
+    // Retrieves Courses associated with a Term
+    public LiveData<TermsWithCourses> getTermsWithCourses() {
+        return TERM_REPO.getTermsWithCourses();
+    }
+
+
+    // Inserts a new course tied to the currentTerm.
+    public void insertCourse(Course course) {
+        COURSE_REPO.insertCourse(course);
     }
 }

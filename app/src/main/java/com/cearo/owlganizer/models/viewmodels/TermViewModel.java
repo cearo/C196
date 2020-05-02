@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.cearo.owlganizer.database.repositories.MentorRepository;
 import com.cearo.owlganizer.database.repositories.TermRepository;
+import com.cearo.owlganizer.models.Mentor;
 import com.cearo.owlganizer.models.Term;
 
 import java.util.List;
@@ -26,17 +28,23 @@ public class TermViewModel extends AndroidViewModel {
 
     private TermRepository termRepository;
     private LiveData<List<Term>> allTerms;
+    private MentorRepository mentorRepository;
 
     // Constructor
     public TermViewModel(@NonNull Application application) {
         super(application); // Passes app reference to AndroidViewModel's Constructor.
         this.termRepository = new TermRepository(application);
         this.allTerms = termRepository.getAllTerms();
+        this.mentorRepository = new MentorRepository(application);
     }
 
     // Getter for allTerms
     public LiveData<List<Term>> getAllTerms() {
         return allTerms;
+    }
+
+    public LiveData<List<Mentor>> getAllMentors() {
+        return mentorRepository.getAllMentors();
     }
 
     // **** Database operation APIs for the UI ****

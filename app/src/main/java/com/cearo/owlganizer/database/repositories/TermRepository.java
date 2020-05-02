@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 
 import com.cearo.owlganizer.database.AppDatabase;
 import com.cearo.owlganizer.database.daos.TermDao;
+import com.cearo.owlganizer.database.relationships.TermsWithCourses;
 import com.cearo.owlganizer.models.Term;
 
 import java.util.List;
@@ -60,6 +61,10 @@ public class TermRepository {
 
     public void deleteTerm(Term term) {
         AppDatabase.databaseWriteExecutor.execute(() -> termDao.deleteTerm(term));
+    }
+
+    public LiveData<TermsWithCourses> getTermsWithCourses() {
+        return termDao.getTermsWithCourses();
     }
 
     public void deleteAllTerms() {

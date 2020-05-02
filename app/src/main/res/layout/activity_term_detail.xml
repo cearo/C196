@@ -4,107 +4,110 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="137dp"
-        android:text="@string/end_date_label"
-        app:layout_constraintBottom_toTopOf="@+id/detail_term_save_close"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="49dp"
-        android:layout_marginEnd="11dp"
-        android:text="@string/start_date_label"
-        app:layout_constraintEnd_toStartOf="@+id/detail_term_start"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="118dp"
-        android:layout_marginBottom="49dp"
-        android:text="@string/title_label"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/detail_term_title"
         android:layout_width="320dp"
         android:layout_height="51dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="94dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="23dp"
-        android:inputType="textCapSentences"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="89dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="20dp"
+        android:autofillHints=""
         android:hint="@string/detail_term_title_hint"
+        android:inputType="textCapSentences"
         app:layout_constraintBottom_toTopOf="@+id/detail_term_start"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="" />
+        app:layout_constraintStart_toEndOf="@+id/term_title_label"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/detail_term_start"
-        android:layout_width="320dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="9dp"
-        android:ems="10"
-        android:hint="@string/detail_term_start_hint"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/detail_term_title" />
+    <TextView
+        android:id="@+id/term_title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="108dp"
+        android:text="@string/title_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/term_start_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="45dp"
+        android:text="@string/start_date_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/term_title_label" />
+
+    <TextView
+        android:id="@+id/term_end_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginBottom="74dp"
+        android:text="@string/end_date_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toTopOf="@+id/term_courses"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/term_start_label" />
 
     <EditText
         android:id="@+id/detail_term_end"
         android:layout_width="320dp"
         android:layout_height="51dp"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="9dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/detail_term_end_hint"
         android:inputType="date"
+        app:layout_constraintBottom_toTopOf="@+id/add_new_note"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/term_end_label"
         app:layout_constraintTop_toBottomOf="@+id/detail_term_start" />
+
     <!-- This button will be a close button on initiation
     but transform to save if a field changes-->
+
+    <EditText
+        android:id="@+id/detail_term_start"
+        android:layout_width="320dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:ems="10"
+        android:hint="@string/detail_term_start_hint"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/term_start_label"
+        app:layout_constraintTop_toBottomOf="@+id/detail_term_title" />
+
     <Button
-        android:id="@+id/detail_term_save_close"
+        android:id="@+id/detail_term_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="272dp"
+        android:layout_marginTop="42dp"
         android:backgroundTint="#19BB0C"
-        android:text="@string/button_save"
         android:enabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/button_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_term_end" />
+        app:layout_constraintTop_toBottomOf="@+id/term_courses" />
+
     <Button
         android:id="@+id/detail_term_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="272dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="132dp"
         android:backgroundTint="#C70707"
         android:text="@string/button_delete"
         android:textColor="#FFF"
@@ -112,6 +115,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_term_save_close" />
+        app:layout_constraintTop_toBottomOf="@+id/detail_term_save" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/term_courses"
+        android:layout_width="match_parent"
+        android:layout_height="117dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="42dp"
+        app:layout_constraintBottom_toTopOf="@+id/detail_term_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/term_add_new_course" />
+
+    <TextView
+        android:id="@+id/term_courses_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/term_course_list_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/term_courses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_term_end" />
+
+    <ImageButton
+        android:id="@+id/term_add_new_course"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/term_courses_title"
+        app:layout_constraintTop_toBottomOf="@+id/detail_term_end"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

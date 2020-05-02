@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -15,17 +16,24 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cearo.owlganizer.R;
+import com.cearo.owlganizer.adapters.recyclerviews.CourseAdapter;
 import com.cearo.owlganizer.databinding.ActivityTermDetailBinding;
 import com.cearo.owlganizer.fragments.DatePickerFragment;
+import com.cearo.owlganizer.models.Course;
 import com.cearo.owlganizer.models.Term;
 import com.cearo.owlganizer.models.viewmodels.TermDetailViewModel;
+import com.cearo.owlganizer.utils.listeners.ItemClickListener;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /*
@@ -35,18 +43,19 @@ import java.util.Locale;
  */
 
 public class TermDetailActivity extends AppCompatActivity
-        implements DatePickerDialog.OnDateSetListener {
+        implements DatePickerDialog.OnDateSetListener, ItemClickListener {
     // Binding referencing activity_term_detail.xml
     ActivityTermDetailBinding binding;
 
     // The ID of the form field selected. Used to fill the form field with data.
     private int inputSelectedId = 0;
-    // A reference to the View Model so I don't have to make a new ViewModelProvider every time.
-    private TermDetailViewModel viewModel;
+
     // Date Format used by the form.
     final String DATE_FORMAT = "MMM dd, yyyy";
     // Formatter applying the format.
     final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
+    final List<Course> TERM_COURSES = new ArrayList<>();
 
 
     @Override
@@ -55,29 +64,19 @@ public class TermDetailActivity extends AppCompatActivity
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         binding = ActivityTermDetailBinding.inflate(layoutInflater);
         // Getting an instance of the ViewModel for this screen
-        viewModel = new ViewModelProvider(this).get(TermDetailViewModel.class);
-        /*
-            TODO: Rewrite this comment
-            I initialize the term to be extracted from the database as null in order to first
-            validate that the termSelectedId is not the default value of 0: which would indicate
-            that the object obtained from the term item click was null for some reason.
+        final TermDetailViewModel VIEW_MODEL =
+                new ViewModelProvider(this).get(TermDetailViewModel.class);
 
-            TODO: Think about how to implement UI notification of an issue.
-            If termSelectedId or currentTerm are null (or 0 which is effectively null) then the UI
-            should be notified in some way. Maybe I create an intent to kick back to MainActivity?
+        // Getting the Intent that started this Activity
+        final Intent FROM_MAIN_ACT = getIntent();
+        // Extracting the Extra data attached to the Intent
+        // TODO: Update termId string to be a final String member variable.
+        final long TERM_SELECTED_ID = FROM_MAIN_ACT.getLongExtra("termId", 0);
 
-         */
-        LiveData<Term> currentTerm = null;
-        /*
-            These variables will hold the String data for the Term we are detailing.
-            They will be set after the Term is fetched from the database. I am naming them using
-            a final convention to imply their intention to not be changed. I cannot make them final
-            as I'm not overriding the AppCompatActivity constructor. They are to represent the
-            Term as it was pulled from the database. This will allow me to see if changes made to
-            the Term are ever reverted back to their initial state so I can disable the Save button
-            allowing me to avoid unnecessary db calls.
-            TODO: Look into possibly overriding the AppCompatActivity constructor.
-         */
+//        liveTermsWithCourses = viewModel.getTermsWithCourses();
+
+        final LiveData<Term> CURRENT_TERM = VIEW_MODEL.getTermById(TERM_SELECTED_ID);
+
         // **** Setting Interaction Listeners ****
 
         /*
@@ -131,14 +130,14 @@ public class TermDetailActivity extends AppCompatActivity
                     // Making the CharSequence a String for comparison
                     final String NEW_TEXT = s.toString();
                     // Using the View Model reference to get the current Term
-                    Term currentTerm = viewModel.getCurrentTerm();
+                    final Term TERM = CURRENT_TERM.getValue();
                     // Null safety
-                    if (currentTerm != null) {
+                    if (TERM != null) {
                         // Extracting values into variables
-                        final String TERM_TITLE = currentTerm.getTitle();
+                        final String TERM_TITLE = TERM.getTitle();
                         // Formatting LocalDate strings to match the form
-                        final String TERM_START = currentTerm.getStartDate().format(FORMATTER);
-                        final String TERM_END = currentTerm.getEndDate().format(FORMATTER);
+                        final String TERM_START = TERM.getStartDate().format(FORMATTER);
+                        final String TERM_END = TERM.getEndDate().format(FORMATTER);
 
                         isTextChanged = !NEW_TEXT.equals(TERM_TITLE)
                                 && !NEW_TEXT.equals(TERM_START)
@@ -155,12 +154,12 @@ public class TermDetailActivity extends AppCompatActivity
                         field.setError(ERR_FIELD_BLANK);
                     }
                     else field.setError(null);
-                    binding.detailTermSaveClose.setEnabled(isSaveAllowed);
+                    binding.detailTermSave.setEnabled(isSaveAllowed);
                 }
             });
         }
         // Storing my buttons in an array for the same reason I did with my EditTexts above.
-        Button[] buttons = {binding.detailTermSaveClose, binding.detailTermDelete};
+        Button[] buttons = {binding.detailTermSave, binding.detailTermDelete};
         // Iterating over each Button to set onClick listeners.
         for (Button button : buttons) {
             // Setting onClick listener for each button.
@@ -168,8 +167,8 @@ public class TermDetailActivity extends AppCompatActivity
                 // This represents a decision to go back to ActivityMain
                 boolean goBackToMain = false;
                 // Setting up variables for readability.
-                final Term TERM = viewModel.getCurrentTerm();
-                final Button SAVE_BUTTON = binding.detailTermSaveClose;
+                final Term TERM = CURRENT_TERM.getValue();
+                final Button SAVE_BUTTON = binding.detailTermSave;
                 final Button DELETE_BUTTON = binding.detailTermDelete;
                 /*
                     Determining what action to take based on which button is pressed:
@@ -192,9 +191,9 @@ public class TermDetailActivity extends AppCompatActivity
                     TERM.setStartDate(NEW_START_L_DATE);
                     TERM.setEndDate(NEW_END_L_DATE);
                     // Updating DB
-                    viewModel.updateTerm(TERM);
+                    VIEW_MODEL.updateTerm(TERM);
                     // Returning to MainActivity
-                    returnToMainActivity();
+                    finish();
                 } else if (button.equals(DELETE_BUTTON)) {
                     final String ALERT_TITLE = "Are you sure you want to delete this Term?";
                     final String ALERT_MSG = "Deleting this Term is a final act; act with caution.";
@@ -205,14 +204,14 @@ public class TermDetailActivity extends AppCompatActivity
                     BUILDER.setMessage(ALERT_MSG);
                     BUILDER.setPositiveButton(BTN_DEL_TXT,
                             (dialog, which) -> {
-                                // Getting the LiveData object. Id of 0 will return current.
-                                LiveData<Term> liveTerm = viewModel.getTermById(0);
+                                // Getting the LiveData object
+                                final LiveData<Term> LIVE_TERM = VIEW_MODEL.getCurrentTerm();
                                 // Removing observers to avoid them triggering on deletion.
-                                liveTerm.removeObservers(this);
+                                LIVE_TERM.removeObservers(this);
                                 // Deleting the Term from the DB
-                                viewModel.deleteTerm(TERM);
+                                VIEW_MODEL.deleteTerm(TERM);
                                 //Returning to MainActivity
-                                returnToMainActivity();
+                                finish();
                             });
                     BUILDER.setNegativeButton(BTN_CNCL_TXT,
                             (dialog, which) -> dialog.cancel());
@@ -220,19 +219,11 @@ public class TermDetailActivity extends AppCompatActivity
                 }
             });
         }
-        // Getting the Intent that started this Activity
-        Intent intent = getIntent();
-        // Extracting the Extra data attached to the Intent
-        // TODO: Update termId string to be a final String member variable.
-        long termSelectedId = intent.getLongExtra("termId", 0);
 
-        if (termSelectedId != 0) {
-            currentTerm = viewModel.getTermById(termSelectedId);
-        }
-        // Null safety on currentTerm, considering it is initialized to null.
-        if (currentTerm != null) {
+        // Null safety
+        if (CURRENT_TERM != null) {
             // Setting the LiveData observer to populate the form fields based on the term found.
-            currentTerm.observe(this, term -> {
+            CURRENT_TERM.observe(this, term -> {
                 // Setting form field data
                 binding.detailTermTitle.setText(term.getTitle());
                 // Setting the formatted LocalDate strings
@@ -241,8 +232,31 @@ public class TermDetailActivity extends AppCompatActivity
             });
         }
 
+        binding.termAddNewCourse.setOnClickListener(view -> {
+            final Intent TO_NEW_COURSE = new Intent(this, NewCourseActivity.class);
+            TO_NEW_COURSE.putExtra("termId", TERM_SELECTED_ID);
+            startActivity(TO_NEW_COURSE);
+        });
+
+        final RecyclerView RECYCLER_VIEW = binding.termCourses;
+
+        final CourseAdapter ADAPTER = new CourseAdapter(TERM_COURSES);
+
+
+        RECYCLER_VIEW.setAdapter(ADAPTER);
+        RECYCLER_VIEW.setLayoutManager(new LinearLayoutManager(this));
+
+        final LiveData<List<Course>> LIVE_COURSE_LIST = VIEW_MODEL.getTermCourses();
+        LIVE_COURSE_LIST.observe(this, COURSE_LIST -> {
+            ADAPTER.setItemClickListener(this);
+            TERM_COURSES.clear();
+            TERM_COURSES.addAll(COURSE_LIST);
+            ADAPTER.setTermCourses(TERM_COURSES);
+        });
+        // Displaying activity_term_detail.xml
         setContentView(binding.getRoot());
     }
+
 
     // Called once a date is chosen from the DatePickerDialog.
     @Override
@@ -261,11 +275,29 @@ public class TermDetailActivity extends AppCompatActivity
             dateField.setText(formatter.format(CALENDAR.getTime()));
     }
 
+    @Override
+    public void onClick(View view, int position) {
+//            TermsWithCourses termCourses = termsWithCourses.getValue();
+//            List<Course> termCourseList = termCourses != null ? termCourses.getCourses() : null;
+            Course courseSelected = TERM_COURSES != null ? TERM_COURSES.get(position) : null;
+
+            if (courseSelected != null) {
+
+                long courseId = courseSelected.getCourseId();
+
+                final Intent TO_COURSE_DETAIL =
+                        new Intent(this, CourseDetailActivity.class);
+
+                TO_COURSE_DETAIL.putExtra("courseId", courseId);
+                startActivity(TO_COURSE_DETAIL);
+
+            }
+    }
     // Used to return to the MainActivity
+
     private void returnToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 
 }
