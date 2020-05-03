@@ -66,13 +66,13 @@ public class CourseDetailViewModel extends AndroidViewModel {
         return this.CURRENT_COURSE;
     }
 
-    public void updateCourse(Course course) {
+    public void updateCourse(@NonNull Course course) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             COURSE_REPO.updateCourse(course);
         });
     }
 
-    public void deleteCourse(Course course) {
+    public void deleteCourse(@NonNull Course course) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             COURSE_REPO.deleteCourse(course);
         });
@@ -87,9 +87,5 @@ public class CourseDetailViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Note>> getCourseNotes() { return this.COURSE_NOTES; }
-
-    public LiveData<Note> getNoteById(long id) {
-        return NOTE_REPO.getNoteById(id);
-    }
 
 }

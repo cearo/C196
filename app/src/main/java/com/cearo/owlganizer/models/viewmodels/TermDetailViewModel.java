@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.cearo.owlganizer.database.relationships.TermsWithCourses;
 import com.cearo.owlganizer.database.repositories.CourseRepository;
 import com.cearo.owlganizer.database.repositories.TermRepository;
 import com.cearo.owlganizer.models.Course;
@@ -56,21 +55,12 @@ public class TermDetailViewModel extends AndroidViewModel {
         return this.TERM_COURSES;
     }
     // Updates the Term's record in the DB.
-    public void updateTerm(Term term) {
+    public void updateTerm(@NonNull Term term) {
         TERM_REPO.updateTerm(term);
     }
     // Deletes the Term's record from the DB.
-    public void deleteTerm(Term term) {
+    public void deleteTerm(@NonNull Term term) {
         TERM_REPO.deleteTerm(term);
     }
-    // Retrieves Courses associated with a Term
-    public LiveData<TermsWithCourses> getTermsWithCourses() {
-        return TERM_REPO.getTermsWithCourses();
-    }
 
-
-    // Inserts a new course tied to the currentTerm.
-    public void insertCourse(Course course) {
-        COURSE_REPO.insertCourse(course);
-    }
 }

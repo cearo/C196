@@ -28,6 +28,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public void setCourseNotes(List<Note> courseNotes) {
         this.courseNotes = courseNotes;
+        notifyDataSetChanged();
     }
 
     @NonNull

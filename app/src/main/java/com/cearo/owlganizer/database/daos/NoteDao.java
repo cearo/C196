@@ -17,20 +17,11 @@ public interface NoteDao {
     @Insert
     void insertNote(Note note);
 
-    @Insert
-    void insertAllNotes(Note[] notes);
-
     @Update
     void updateNote(Note note);
 
-    @Update
-    void updateNotes(List<Note> notes);
-
     @Delete
     void deleteNote(Note note);
-
-    @Query("DELETE FROM notes WHERE parent_course_id = :id")
-    void deleteAllNotesByCourse(long id);
 
     @Query("SELECT * FROM notes WHERE parent_course_id = :id")
     LiveData<List<Note>> getAllNotesByCourse(long id);

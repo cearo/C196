@@ -37,6 +37,7 @@
     <string name="new_assessment_title_hint">Select a title for this assessment</string>
     <string name="new_assessment_due_hint">Select a due date for this assessment</string>
     <string name="new_note_title_hint">Enter a title for your new note here</string>
+    <string name="note_detail_title_hint">Enter a title for your note here</string>
     <string name="new_note_body_hint">Enter your note here</string>
     <string name="detail_term_title_hint">Selected Term Title</string>
     <string name="detail_course_title_hint">Selected Course Title</string>

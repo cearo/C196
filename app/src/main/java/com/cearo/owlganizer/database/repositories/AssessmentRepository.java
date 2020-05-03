@@ -37,12 +37,6 @@ public class AssessmentRepository {
         });
     }
 
-    public void deleteAllAssessmentsByCourse(long id) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            ASSESSMENT_DAO.deleteAllAssessmentsByCourse(id);
-        });
-    }
-
     public LiveData<List<Assessment>> getAllAssessmentsByCourse(long id) {
         return ASSESSMENT_DAO.getAssessmentsByCourse(id);
     }

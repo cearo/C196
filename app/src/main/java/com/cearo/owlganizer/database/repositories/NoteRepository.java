@@ -37,12 +37,6 @@ public class NoteRepository {
         });
     }
 
-    public void deleteAllNotesByCourse(long id) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            NOTE_DAO.deleteAllNotesByCourse(id);
-        });
-    }
-
     public LiveData<List<Note>> getAllNotesByCourse(long id) {
         return NOTE_DAO.getAllNotesByCourse(id);
     }

@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.cearo.owlganizer.database.relationships.CoursesWithAssessments;
 import com.cearo.owlganizer.models.Course;
 
 import java.util.List;
@@ -44,10 +43,6 @@ public interface CourseDao {
     @Query("SELECT * FROM courses WHERE course_id = :id")
     LiveData<Course> getCourseById(long id);
 
-    @Query("SELECT * FROM courses WHERE parent_term_id = :id")
+    @Query("SELECT * FROM courses WHERE parent_term_id = :id ORDER BY start_date, end_date")
     LiveData<List<Course>> getCoursesByTerm(long id);
-
-    @Transaction
-    @Query("SELECT * FROM courses")
-    LiveData<CoursesWithAssessments> getCoursesWithAssessments();
 }

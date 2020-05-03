@@ -17,18 +17,12 @@ public class NewCourseViewModel extends AndroidViewModel {
 
     private final CourseRepository COURSE_REPO;
 
-    private final MentorRepository MENTOR_REPO;
-
-//    private final TermRepository TERM_REPO;
-
     private final LiveData<List<Mentor>> ALL_MENTORS;
 
     public NewCourseViewModel(@NonNull Application application) {
         super(application);
         COURSE_REPO = new CourseRepository(application);
-        MENTOR_REPO = new MentorRepository(application);
-//        TERM_REPO = new TermRepository(application);
-
+        MentorRepository MENTOR_REPO = new MentorRepository(application);
         ALL_MENTORS = MENTOR_REPO.getAllMentors();
     }
 
@@ -36,11 +30,8 @@ public class NewCourseViewModel extends AndroidViewModel {
         return ALL_MENTORS;
     }
 
-    public void insertCourse(Course course) {
+    public void insertCourse(@NonNull Course course) {
         COURSE_REPO.insertCourse(course);
     }
 
-//    public LiveData<Term> getTermById(long id) {
-//        return TERM_REPO.getTermById(id);
-//    }
 }
