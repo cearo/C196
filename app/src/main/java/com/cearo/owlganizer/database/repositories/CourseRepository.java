@@ -16,7 +16,6 @@ import androidx.lifecycle.LiveData;
 
 import com.cearo.owlganizer.database.AppDatabase;
 import com.cearo.owlganizer.database.daos.CourseDao;
-import com.cearo.owlganizer.database.relationships.CoursesWithAssessments;
 import com.cearo.owlganizer.models.Course;
 
 import java.util.List;
@@ -40,12 +39,6 @@ public class CourseRepository {
         });
     }
 
-    public void insertCourses(Course[] courses) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            courseDao.insertCourses(courses);
-        });
-    }
-
     public void updateCourse(Course course) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             courseDao.updateCourse(course);
@@ -64,9 +57,5 @@ public class CourseRepository {
 
     public LiveData<List<Course>> getCoursesByTerm(long id) {
         return courseDao.getCoursesByTerm(id);
-    }
-
-    public LiveData<CoursesWithAssessments> getCoursesWithAssessments() {
-        return courseDao.getCoursesWithAssessments();
     }
 }

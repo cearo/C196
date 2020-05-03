@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.cearo.owlganizer.database.relationships.TermsWithCourses;
 import com.cearo.owlganizer.models.Term;
 
 import java.util.List;
@@ -47,13 +46,4 @@ public interface TermDao {
     // Method for retrieving a single Term by id
     @Query("SELECT * FROM terms WHERE term_id = :id")
     LiveData<Term> getTermById(long id);
-
-    // Method for retrieving all Courses that are children of a specific Term.
-    @Transaction
-    @Query("SELECT * FROM terms")
-    LiveData<TermsWithCourses> getTermsWithCourses();
-
-    // Method for deleting all Terms from the database
-    @Query("DELETE FROM terms")
-    void deleteAllTerms();
 }

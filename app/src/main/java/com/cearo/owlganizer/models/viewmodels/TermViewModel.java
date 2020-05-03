@@ -49,19 +49,8 @@ public class TermViewModel extends AndroidViewModel {
 
     // **** Database operation APIs for the UI ****
 
-    public void insertTerm(Term term) {
+    public void insertTerm(@NonNull Term term) {
         termRepository.insertTerm(term);
     }
 
-    public void updateTerm(Term term) {
-        termRepository.updateTerm(term);
-    }
-
-    public void deleteTerm(Term term) {
-        termRepository.deleteTerm(term);
-    }
-
-    public LiveData<Term> getTermById(long id) {
-        return termRepository.getTermById(id);
-    }
 }

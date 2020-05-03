@@ -25,6 +25,7 @@ import com.cearo.owlganizer.fragments.DatePickerFragment;
 import com.cearo.owlganizer.models.Course;
 import com.cearo.owlganizer.models.Mentor;
 import com.cearo.owlganizer.models.viewmodels.NewCourseViewModel;
+import com.cearo.owlganizer.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,28 +36,30 @@ import java.util.Locale;
 
 public class NewCourseActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
-
+    // Binding reference to activity_new_course.xml
     private ActivityNewCourseBinding binding;
-
+    // Global Date format String
     private final String DATE_FORMAT = "MMM dd, yyyy";
-
-    private int inputSelectedId = 0;
+    // ID of the date EditText selected. Set in onTouchListener
+    private int dateFieldSelectedId = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // This Activity was started by TermDetailActivity with the parent term id passed in
         final Intent FROM_TERM_DETAIL = getIntent();
         final long TERM_ID = FROM_TERM_DETAIL.getLongExtra("termId", 0);
+        // Initializing the View Model
         final NewCourseViewModel VIEW_MODEL = new ViewModelProvider(this)
                 .get(NewCourseViewModel.class);
-//        final LiveData<Term> parentTerm = TERM_ID != 0 ? VIEW_MODEL.getTermById(TERM_ID) : null;
+        // Getting the list of all Mentors from the database
         final LiveData<List<Mentor>> ALL_MENTORS = VIEW_MODEL.getAllMentors();
-
+        // Initializing the binding
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         binding = ActivityNewCourseBinding.inflate(layoutInflater);
-
+        // Saving is disabled by default
         binding.newCourseSave.setEnabled(false);
-
+        // The form's EditText fields
         EditText[] formFields = {binding.newCourseTitle, binding.newCourseStart,
                 binding.newCourseEnd};
 
@@ -67,7 +70,7 @@ public class NewCourseActivity extends AppCompatActivity
 
                 field.setOnTouchListener((view, event) -> {
                     // Capturing the ID of the field that triggered the listener.
-                    inputSelectedId = field.getId();
+                    dateFieldSelectedId = field.getId();
                     // This ensures there is only one DatePicker by binding the creation to one event
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         // Creating the new DatePickerFragment
@@ -85,12 +88,16 @@ public class NewCourseActivity extends AppCompatActivity
                 If the new values are different, saving will be enabled and otherwise disabled.
              */
             field.addTextChangedListener(new TextWatcher() {
-
+                // If fields are blank, saving is blocked
                 boolean isFieldBlank = false;
 
-
+                // Used to detect if the field is blank upon change
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // If the number of characters changed (count) and the length of the
+                    // text that was in the field before the change (s.length) are the same
+                    // and the number of characters of the value post change is 0 then
+                    // isFieldBlank = true
                     isFieldBlank = count == s.length() && after == 0;
                 }
 
@@ -98,14 +105,15 @@ public class NewCourseActivity extends AppCompatActivity
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     // Currently don't need to do anything when the text actually changes.
                 }
-
+                // Determining if saving is enabled
                 @Override
                 public void afterTextChanged(Editable s) {
-                    // TODO: Figure out how to make field validation reusable. Custom interface?
+                    // If fields are blank, set an error
                     if (isFieldBlank) {
                         final String ERR_FIELD_BLANK = "Field cannot be blank!";
                         field.setError(ERR_FIELD_BLANK);
                     }
+                    // Remove the error otherwise
                     else field.setError(null);
                     binding.newCourseSave.setEnabled(!isFieldBlank);
                 }
@@ -158,13 +166,10 @@ public class NewCourseActivity extends AppCompatActivity
                         status, TERM_ID, mentorId);
                 VIEW_MODEL.insertCourse(NEW_COURSE);
 
-//                // Transitioning back to the MainActivity
-//                Intent intent = new Intent(this, MainActivity.class);
-//                startActivity(intent);
                 finish();
             }
         });
-
+        // Setting up course status options Spinner
         final Spinner STATUS_OPTIONS_SPIN = binding.courseStatusOptions;
         final ArrayAdapter<CharSequence> STATUS_OPTIONS_ADAPTER = ArrayAdapter.createFromResource(
                 this,
@@ -175,20 +180,20 @@ public class NewCourseActivity extends AppCompatActivity
                 R.layout.support_simple_spinner_dropdown_item
         );
         STATUS_OPTIONS_SPIN.setAdapter(STATUS_OPTIONS_ADAPTER);
-
+        // Setting up course mentor options Spinner
         final Spinner MENTOR_OPTIONS_SPIN = binding.courseMentorOptions;
-        ALL_MENTORS.observe(this, MentorList -> {
-            ArrayAdapter<Mentor> mentorOptionsAdapter = new ArrayAdapter<>(
-                    this,
-                    R.layout.support_simple_spinner_dropdown_item,
-                    MentorList
-                    );
-            MENTOR_OPTIONS_SPIN.setAdapter(mentorOptionsAdapter);
-        });
+        ArrayAdapter<Mentor> mentorOptionsAdapter = new ArrayAdapter<>(
+            this,
+            R.layout.support_simple_spinner_dropdown_item,
+            Constants.ALL_MENTORS
+        );
+        MENTOR_OPTIONS_SPIN.setAdapter(mentorOptionsAdapter);
+        // See onItemSelected() below
+        STATUS_OPTIONS_SPIN.setOnItemSelectedListener(this);
         MENTOR_OPTIONS_SPIN.setOnItemSelectedListener(this);
         setContentView(binding.getRoot());
     }
-
+    // Sets the EditText text value once the user picks a date from the date picker
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         // Calendar to hold the date values
@@ -202,16 +207,18 @@ public class NewCourseActivity extends AppCompatActivity
         // Date formatter using the format String, currently only handling US Locales.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.US);
         // Getting the EditText that invoked the DatePickerDialog.
-        EditText dateField = binding.getRoot().findViewById(inputSelectedId);
+        EditText dateField = binding.getRoot().findViewById(dateFieldSelectedId);
         // Setting the EditText field value to the formatted Calendar date.
         dateField.setText(formatter.format(CALENDAR.getTime()));
     }
-
+    // When a user picks a mentor, update the Mentor info fields
+    // When the user picks anything from a Spinner, enable saving
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        final Mentor MENTOR_SELECTED = (Mentor) parent.getItemAtPosition(position);
+        final Mentor MENTOR_SELECTED = Constants.ALL_MENTORS.get(position);
         binding.courseMentorPhoneDisplay.setText(MENTOR_SELECTED.getPhoneNumber());
         binding.courseMentorEmailDisplay.setText(MENTOR_SELECTED.getEmail());
+        binding.newCourseSave.setEnabled(true);
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface MentorDao {
     @Insert
     void insertMentors(Mentor[] mentors);
 
-    @Query("SELECT * FROM mentors")
+    @Query("SELECT * FROM mentors ORDER BY name")
     LiveData<List<Mentor>> getAllMentors();
 
     @Query("SELECT * FROM mentors WHERE mentor_id = :id")

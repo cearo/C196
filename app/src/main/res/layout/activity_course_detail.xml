@@ -8,10 +8,6 @@
     android:layout_height="wrap_content"
     >
 
-    <!-- This button will be a close button on initiation
-    but transform to save if a field changes-->
-
-
     <Spinner
         android:id="@+id/course_status_options"
         android:layout_width="309dp"
@@ -142,7 +138,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/course_notes"
         android:layout_width="401dp"
-        android:layout_height="77dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +147,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/course_assessments"
         android:layout_width="401dp"
-        android:layout_height="77dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
