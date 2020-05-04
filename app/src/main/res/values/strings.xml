@@ -17,6 +17,8 @@
     <string name="course_mentor_name">Mentor Name</string>
     <string name="course_mentor_phone">Mentor Phone</string>
     <string name="note_body_label">Note:</string>
+    <string name="set_alarm_label">Set Alarm</string>
+    <string name="send_sms_label">Send Note SMS</string>
     <!-- **** End Form Labels **** -->
 
     <!-- **** Button Text **** -->

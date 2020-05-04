@@ -24,15 +24,14 @@ public class TermDetailViewModel extends AndroidViewModel {
     private final LiveData<List<Course>> TERM_COURSES;
     // Getting Repository for Term DB operations.
     private final TermRepository TERM_REPO;
-    // Getting Repository for Course DB operations.
-    private final CourseRepository COURSE_REPO;
 
 
     // Constructor
     public TermDetailViewModel(@NonNull Application application) {
         super(application);
         this.TERM_REPO = new TermRepository(application);
-        this.COURSE_REPO = new CourseRepository(application);
+        // Getting Repository for Course DB operations.
+        CourseRepository COURSE_REPO = new CourseRepository(application);
         CURRENT_TERM_ID = new MutableLiveData<>();
         CURRENT_TERM = Transformations.switchMap(CURRENT_TERM_ID,
                 TERM_REPO::getTermById);

@@ -3,12 +3,11 @@ package com.cearo.owlganizer.activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +19,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,7 +49,7 @@ import java.util.Locale;
 
 public class CourseDetailActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener,
-        ItemClickListener {
+        ItemClickListener, Toolbar.OnMenuItemClickListener {
     // Binding reference for activity_course_detail.xml
     ActivityCourseDetailBinding binding;
     // Global view model reference
@@ -71,10 +71,15 @@ public class CourseDetailActivity extends AppCompatActivity
         // Initializing activity_course_detail.xml reference
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         binding = ActivityCourseDetailBinding.inflate(layoutInflater);
+
+        VIEW_MODEL = new ViewModelProvider(this).get(CourseDetailViewModel.class);
+
+        final Toolbar TOOL_BAR = binding.courseDetailActionBar != null ?
+                binding.courseDetailActionBar : new Toolbar(this);
+        TOOL_BAR.inflateMenu(R.menu.set_alarm);
         // Reference to course status options Spinner
         final Spinner STATUS_OPTIONS_SPIN = binding.courseStatusOptions;
         // Initializing view model
-        VIEW_MODEL = new ViewModelProvider(this).get(CourseDetailViewModel.class);
         // Configuring the mentor options Spinner
         final Spinner MENTOR_OPTIONS_SPIN = binding.courseMentorOptions;
         final ArrayAdapter<Mentor> MENTOR_OPTIONS_ADATPER = new ArrayAdapter<>(
@@ -203,7 +208,7 @@ public class CourseDetailActivity extends AppCompatActivity
                     VIEW_MODEL.updateCourse(currentCourse);
                     // Returning to MainActivity
                     finish();
-                } else if (button.equals(DELETE_BUTTON)) {
+                } else if (button.equals(DELETE_BUTTON) && currentCourse != null) {
                     final String ALERT_TITLE = "Are you sure you want to delete this Course?";
                     final String ALERT_MSG = "Deleting this Course is a final act; " +
                             "proceed with caution.";
@@ -219,10 +224,12 @@ public class CourseDetailActivity extends AppCompatActivity
                                 LiveData<Mentor> liveMentor = VIEW_MODEL.getCourseMentor();
                                 LiveData<List<Assessment>> liveAssessList = VIEW_MODEL
                                         .getCourseAssessments();
+                                LiveData<List<Note>> liveNotesList = VIEW_MODEL.getCourseNotes();
                                 // Removing observers to avoid them triggering on deletion.
                                 liveCourse.removeObservers(this);
                                 liveMentor.removeObservers(this);
                                 liveAssessList.removeObservers(this);
+                                liveNotesList.removeObservers(this);
                                 // Deleting the Course from the DB
                                 VIEW_MODEL.deleteCourse(currentCourse);
                                 //Returning to MainActivity
@@ -356,12 +363,6 @@ public class CourseDetailActivity extends AppCompatActivity
         setContentView(binding.getRoot());
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.i("Config Change", "Config Changed");
-        int vId = binding.getRoot().getId();
-    }
     // Set the text value of the EditText selected by the user with the
     // Date String from the Date Picker.
     @Override
@@ -458,5 +459,10 @@ public class CourseDetailActivity extends AppCompatActivity
                 startActivity(TO_NOTE_DETAIL);
                 break;
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
     }
 }

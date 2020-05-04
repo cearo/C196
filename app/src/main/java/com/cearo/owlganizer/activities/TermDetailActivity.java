@@ -177,7 +177,7 @@ public class TermDetailActivity extends AppCompatActivity
                     DELETE_BUTTON: Prompts for user verification then deletes the Term from the DB.
                  */
 
-                if (button.equals(SAVE_BUTTON)) {
+                if (button.equals(SAVE_BUTTON) && TERM != null) {
                     // I don't need to worry about null field validation as I do that already
                     // in the onTextChanged listener.
                     final String NEW_TITLE = binding.detailTermTitle.getText().toString();
@@ -194,25 +194,44 @@ public class TermDetailActivity extends AppCompatActivity
                     VIEW_MODEL.updateTerm(TERM);
                     // Returning to MainActivity
                     finish();
-                } else if (button.equals(DELETE_BUTTON)) {
-                    final String ALERT_TITLE = "Are you sure you want to delete this Term?";
-                    final String ALERT_MSG = "Deleting this Term is a final act; act with caution.";
-                    final String BTN_DEL_TXT = getString(R.string.button_delete);
-                    final String BTN_CNCL_TXT = getString(R.string.button_close);
+                } else if (button.equals(DELETE_BUTTON) && TERM != null) {
+                    final List<Course> COURSE_LIST = VIEW_MODEL.getTermCourses().getValue();
+
+                    final boolean IS_DELETE_ALLOWED = COURSE_LIST != null
+                            && COURSE_LIST.size() == 0;
+
                     final AlertDialog.Builder BUILDER = new AlertDialog.Builder(this);
-                    BUILDER.setTitle(ALERT_TITLE);
-                    BUILDER.setMessage(ALERT_MSG);
-                    BUILDER.setPositiveButton(BTN_DEL_TXT,
-                            (dialog, which) -> {
-                                // Getting the LiveData object
-                                final LiveData<Term> LIVE_TERM = VIEW_MODEL.getCurrentTerm();
-                                // Removing observers to avoid them triggering on deletion.
-                                LIVE_TERM.removeObservers(this);
-                                // Deleting the Term from the DB
-                                VIEW_MODEL.deleteTerm(TERM);
-                                //Returning to MainActivity
-                                finish();
-                            });
+                    final String BTN_CNCL_TXT = getString(R.string.button_close);
+
+                    if (IS_DELETE_ALLOWED) {
+
+                        final String ALERT_TITLE = "Are you sure you want to delete this Term?";
+                        final String ALERT_MSG = "Deleting this Term is a final act; act with caution.";
+                        final String BTN_DEL_TXT = getString(R.string.button_delete);
+
+                        BUILDER.setTitle(ALERT_TITLE);
+                        BUILDER.setMessage(ALERT_MSG);
+                        BUILDER.setPositiveButton(BTN_DEL_TXT,
+                                (dialog, which) -> {
+                                    // Getting the LiveData object
+                                    final LiveData<Term> LIVE_TERM = VIEW_MODEL.getCurrentTerm();
+                                    // Removing observers to avoid them triggering on deletion.
+                                    LIVE_TERM.removeObservers(this);
+                                    // Deleting the Term from the DB
+                                    VIEW_MODEL.deleteTerm(TERM);
+                                    //Returning to MainActivity
+                                    finish();
+                                }
+                        );
+                    }
+                    else {
+                        final String ALERT_TITLE = "Term cannot be deleted";
+                        final String ALERT_MSG = "Term has %d Courses assigned to it. " +
+                                "Please delete them before deleting this Term.";
+                        BUILDER.setTitle(ALERT_TITLE);
+                        final int NUM_OF_COURSES = COURSE_LIST != null ? COURSE_LIST.size() : 0;
+                        BUILDER.setMessage(String.format(Locale.US, ALERT_MSG, NUM_OF_COURSES));
+                    }
                     BUILDER.setNegativeButton(BTN_CNCL_TXT,
                             (dialog, which) -> dialog.cancel());
                     BUILDER.show();

@@ -11,10 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         >
-        <activity android:name=".activities.NoteDetailActivity"></activity>
+        <activity android:name=".activities.NoteDetailActivity" />
         <activity android:name=".activities.NewNoteActivity" />
         <activity android:name=".activities.NewAssessmentActivity" />
-        <activity android:name=".activities.CourseDetailActivity" />
+        <activity android:name=".activities.CourseDetailActivity"
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".activities.TermDetailActivity" />
         <activity android:name=".activities.NewTermActivity" />
         <activity android:name=".activities.MainActivity">
