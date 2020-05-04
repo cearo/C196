@@ -1,6 +1,9 @@
 package com.cearo.owlganizer.activities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cearo.owlganizer.R;
 import com.cearo.owlganizer.adapters.recyclerviews.TermAdapter;
 import com.cearo.owlganizer.databinding.ActivityMainBinding;
 import com.cearo.owlganizer.models.Mentor;
@@ -21,80 +25,34 @@ import com.cearo.owlganizer.utils.listeners.ItemClickListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemClickListener {
-
-    // Tag for logging
-    private final String TAG = MainActivity.class.getSimpleName();
-    // View-binding for activity_main.xml layout
-    private ActivityMainBinding activityMainBinding;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Obtaining a ViewModel
-        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
 
-        final LiveData<List<Mentor>> ALL_MENTORS = termViewModel.getAllMentors();
+        final LayoutInflater INFLATER = LayoutInflater.from(this);
+        final ActivityMainBinding BINDING = ActivityMainBinding.inflate(INFLATER);
 
-        ALL_MENTORS.observe(this, Constants.ALL_MENTORS::addAll);
-        // LayoutInflater to inflate bindings
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        // Inflating activity_main.xml.
-        activityMainBinding = ActivityMainBinding.inflate(layoutInflater);
-
-        // **** Begin RecyclerView setup ****
-
-        // Using the ViewModel to retrieve the LiveData<List<Terms>> then extracting the List
-        List<Term> allTerms = termViewModel.getAllTerms().getValue();
-
-        // Obtaining a reference to the RecyclerView layout from the activity_main.xml layout binding.
-        RecyclerView recyclerView = activityMainBinding.termList;
-        // Creating the Adapter for the RecyclerView
-        final TermAdapter ADAPTER = new TermAdapter(allTerms);
-        // Setting the click listener in the adapter using the onClick method implementation below
-        ADAPTER.setItemClickListener(this);
-        recyclerView.setAdapter(ADAPTER);
-        // Creating a layout manager with this context reference for the RecyclerView.
-        // LinearLayoutManager will display list items in a linear format.
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // **** End RecyclerView setup ****
-
-        // Observing the LiveData for all the terms for changes
-        // When a change is observed...
-        // Pass the RecyclerView Adapter the updated list.
-        termViewModel.getAllTerms().observe(this, ADAPTER::setAllTerms);
-
-        activityMainBinding.addNewTerm.setOnClickListener(view -> {
-            Intent intent = new Intent(this, NewTermActivity.class);
-            startActivity(intent);
+        BINDING.manageTerms.setOnClickListener(view -> {
+            final Intent TO_TERM_LIST = new Intent(this, TermListActivity.class);
+            startActivity(TO_TERM_LIST);
         });
-
-        // Passing the View using the binding.
-        setContentView(activityMainBinding.getRoot());
+        createNotificationChannel();
+        setContentView(BINDING.getRoot());
     }
-
-    @Override
-    public void onClick(View view, int position) {
-        // Getting the ViewModel
-        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        // Getting the LiveData list of terms
-        List<Term> allTerms = termViewModel.getAllTerms().getValue();
-        // Initializing here so I can set while null checking allTerms.
-        Term termSelected = null;
-        // Null safety
-        if (allTerms != null) {
-            // Getting the Term the user selected from the UI.
-            termSelected = allTerms.get(position);
-        }
-        // Null Safety
-        if (termSelected != null) {
-            // Getting the Term ID to pass to the TermDetailActivity
-            long termId = termSelected.getTermId();
-            // Passing the ID and changing screens
-            Intent intent = new Intent(this, TermDetailActivity.class);
-            intent.putExtra("termId", termId);
-            startActivity(intent);
-        }
+    private void createNotificationChannel() {
+        final String CHANNEL_ID = "1";
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        CharSequence name = getString(R.string.channel_name);
+        String description = getString(R.string.channel_description);
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 }

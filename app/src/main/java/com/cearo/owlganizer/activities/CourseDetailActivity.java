@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,6 +36,7 @@ import com.cearo.owlganizer.models.Course;
 import com.cearo.owlganizer.models.Mentor;
 import com.cearo.owlganizer.models.Note;
 import com.cearo.owlganizer.models.viewmodels.CourseDetailViewModel;
+import com.cearo.owlganizer.utils.AlarmBroadcastReceiver;
 import com.cearo.owlganizer.utils.Constants;
 import com.cearo.owlganizer.utils.listeners.ItemClickListener;
 
@@ -77,6 +79,7 @@ public class CourseDetailActivity extends AppCompatActivity
         final Toolbar TOOL_BAR = binding.courseDetailActionBar != null ?
                 binding.courseDetailActionBar : new Toolbar(this);
         TOOL_BAR.inflateMenu(R.menu.set_alarm);
+        TOOL_BAR.setOnMenuItemClickListener(this);
         // Reference to course status options Spinner
         final Spinner STATUS_OPTIONS_SPIN = binding.courseStatusOptions;
         // Initializing view model
@@ -463,6 +466,17 @@ public class CourseDetailActivity extends AppCompatActivity
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return false;
+        Log.i("Menu Item click", "clicked");
+        Intent TO_ALARM_MANAGER = new Intent(this, AlarmBroadcastReceiver.class);
+        TO_ALARM_MANAGER.setAction("SET_ALARM");
+
+        final Course CURRENT_COURSE = VIEW_MODEL.getCurrentCourse().getValue();
+
+        final String COURSE_NAME = CURRENT_COURSE != null ? CURRENT_COURSE.getTitle() : "";
+
+        TO_ALARM_MANAGER.putExtra("NAME", COURSE_NAME);
+
+        startService(TO_ALARM_MANAGER);
+        return true;
     }
 }
