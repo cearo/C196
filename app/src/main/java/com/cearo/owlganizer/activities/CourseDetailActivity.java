@@ -3,9 +3,11 @@ package com.cearo.owlganizer.activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -352,6 +354,13 @@ public class CourseDetailActivity extends AppCompatActivity
         });
 
         setContentView(binding.getRoot());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("Config Change", "Config Changed");
+        int vId = binding.getRoot().getId();
     }
     // Set the text value of the EditText selected by the user with the
     // Date String from the Date Picker.

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <EditText
+            android:id="@+id/detail_term_title"
+            android:layout_width="320dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="160dp"
+            android:autofillHints=""
+            android:hint="@string/detail_term_title_hint"
+            android:inputType="textCapSentences"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/term_title_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="204dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/title_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/term_start_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="176dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/start_date_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/term_title_label" />
+
+        <TextView
+            android:id="@+id/term_end_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="180dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginBottom="74dp"
+            android:text="@string/end_date_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintBottom_toTopOf="@+id/term_courses"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/term_start_label"
+            app:layout_constraintVertical_bias="0.538" />
+
+        <EditText
+            android:id="@+id/detail_term_end"
+            android:layout_width="320dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="160dp"
+            android:ems="10"
+            android:hint="@string/detail_term_end_hint"
+            android:inputType="date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_term_start" />
+
+        <EditText
+            android:id="@+id/detail_term_start"
+            android:layout_width="320dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="160dp"
+            android:ems="10"
+            android:hint="@string/detail_term_start_hint"
+            android:inputType="date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_term_title" />
+
+        <Button
+            android:id="@+id/detail_term_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
+            android:backgroundTint="#19BB0C"
+            android:enabled="false"
+            android:text="@string/button_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/term_courses" />
+
+        <Button
+            android:id="@+id/detail_term_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="132dp"
+            android:backgroundTint="#C70707"
+            android:text="@string/button_delete"
+            android:textColor="#FFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_term_save" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/term_courses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="42dp"
+            app:layout_constraintBottom_toTopOf="@+id/detail_term_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/term_add_new_course" />
+
+        <TextView
+            android:id="@+id/term_courses_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
+            android:text="@string/term_course_list_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toTopOf="@+id/term_courses"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_term_end" />
+
+        <ImageButton
+            android:id="@+id/term_add_new_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/term_courses_title"
+            app:layout_constraintTop_toBottomOf="@+id/detail_term_end"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
