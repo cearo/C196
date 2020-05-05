@@ -3,21 +3,11 @@ package com.cearo.owlganizer.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
-import static androidx.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "assessments", foreignKeys =
-    @ForeignKey(
-        entity = Course.class,
-        parentColumns = "course_id",
-        childColumns = "parent_course_id",
-        onDelete = CASCADE
-    )
-)
+@Entity(tableName = "assessments")
 public class Assessment {
 
     @PrimaryKey(autoGenerate = true)

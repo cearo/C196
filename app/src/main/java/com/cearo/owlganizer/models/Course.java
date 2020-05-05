@@ -3,23 +3,12 @@ package com.cearo.owlganizer.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
-@Entity(tableName = "courses", foreignKeys =
-        {@ForeignKey(
-        entity = Term.class,
-        parentColumns = "term_id",
-        childColumns = "parent_term_id"
-    ),  @ForeignKey(
-        entity = Mentor.class,
-        parentColumns = "mentor_id",
-        childColumns = "course_mentor_id"
-    )}
-)
+@Entity(tableName = "courses")
 public class Course {
 
     @PrimaryKey(autoGenerate = true)

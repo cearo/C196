@@ -17,6 +17,9 @@ public interface AssessmentDao {
     @Insert
     void insertAssessment(Assessment assessment);
 
+    @Insert
+    void insertAssessments(Assessment[] assessments);
+
     @Update
     void updateAssessment(Assessment assessment);
 

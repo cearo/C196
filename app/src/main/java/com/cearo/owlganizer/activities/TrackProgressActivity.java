@@ -44,7 +44,7 @@ public class TrackProgressActivity extends AppCompatActivity {
 
                 switch(COURSE_STATUS) {
 
-                    case "Planned":
+                    case "Plan to Take":
                     case "In Progress":
                         int PLANNED_COUNTER = Integer.parseInt(COURSE_PLANNED_COUNT
                                 .getText().toString());

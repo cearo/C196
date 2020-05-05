@@ -20,7 +20,4 @@ public interface MentorDao {
 
     @Query("SELECT * FROM mentors WHERE mentor_id = :id")
     LiveData<Mentor> getMentorById(long id);
-
-    @Query("DELETE FROM mentors")
-    void deleteAllMentors();
 }

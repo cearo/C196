@@ -96,8 +96,11 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onCreate(db);
             // DB operations cannot be performed on the main thread
             databaseWriteExecutor.execute(() -> {
-                MentorDao mentorDao = INSTANCE.mentorDao();
                 TermDao termDao = INSTANCE.termDao();
+                MentorDao mentorDao = INSTANCE.mentorDao();
+                CourseDao courseDao = INSTANCE.courseDao();
+                AssessmentDao assessmentDao = INSTANCE.assessmentDao();
+                NoteDao noteDao = INSTANCE.noteDao();
 
                 // **** Begin Sample Data ****
                 Mentor mentor1 = new Mentor("John Porter",
@@ -122,13 +125,38 @@ public abstract class AppDatabase extends RoomDatabase {
                 LocalDate endDate2 = startDate2.plus(6, ChronoUnit.MONTHS);
                 Term term2 = new Term ("Term 2", startDate2, endDate2);
 
+                Course course1 = new Course("Software Development", startDate,
+                        endDate, "In Progress", 1, 1);
+
+                Course course2 = new Course("Math", startDate2, endDate2,
+                        "Plan to Take", 2, 2);
+
+                Assessment assessment1 = new Assessment("Software Development Assessment",
+                        endDate, "Performance", 1);
+
+                Assessment assessment2 = new Assessment("Math Assessment", endDate2,
+                        "Objective", 2);
+
+                Note note1 = new Note("Software Project Requirements",
+                        "This project requires sample data to be loaded.",
+                        1);
+
+                Note note2 = new Note("Math Equations",
+                        "2 + 2 = 4" +
+                                "\na^2 + b^2 = c^2", 2);
+
                 // Sample Terms to be inserted into DB
                 Term[] termList = {term1, term2};
-
+                Course[] courseList = {course1, course2};
+                Assessment[] assessmentList = {assessment1, assessment2};
+                Note[] noteList = {note1, note2};
                 // **** End Sample Data ****
 
-                // Inserting sample Terms
+                // Inserting sample data
                 termDao.insertAllTerms(termList);
+                courseDao.insertCourses(courseList);
+                assessmentDao.insertAssessments(assessmentList);
+                noteDao.insertnotes(noteList);
             });
         }
     };

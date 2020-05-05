@@ -301,7 +301,7 @@ public class CourseDetailActivity extends AppCompatActivity
                 // Getting a Mentor object from the Adapter
                 Mentor theMentor = MENTOR_OPTIONS_ADATPER.getItem(i);
                 // Comparing the names of the Mentor objects to determine equivalence
-                if (theMentor!= null && theMentor.getName().equals(mentor.getName())) {
+                if (theMentor != null && theMentor.getName().equals(mentor.getName())) {
                     MENTOR_OPTIONS_SPIN.setSelection(i, false);
                 }
             }
