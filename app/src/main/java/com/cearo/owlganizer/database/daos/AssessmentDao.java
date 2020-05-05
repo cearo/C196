@@ -23,6 +23,9 @@ public interface AssessmentDao {
     @Delete
     void deleteAssessment(Assessment assessment);
 
+    @Query("SELECT * FROM assessments")
+    LiveData<List<Assessment>> getAllAssessments();
+
     @Query("SELECT * from assessments WHERE parent_course_id = :id ORDER BY due_date DESC")
     LiveData<List<Assessment>> getAssessmentsByCourse(long id);
 

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cearo.owlganizer">
 
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
     <application
         android:allowBackup="false"
         android:hardwareAccelerated="true"
@@ -10,10 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".utils.AlarmBroadcastReceiver"
+        <activity android:name=".activities.TrackProgressActivity"></activity>
+        <activity android:name=".activities.SendSmsActivity" />
+
+        <receiver
+            android:name=".utils.AlarmBroadcastReceiver"
             android:enabled="true" />
-        <activity android:name=".activities.TermListActivity"></activity>
-        <activity android:name=".activities.NoteDetailActivity" />
+
+        <activity android:name=".activities.TermListActivity" />
+        <activity
+            android:name=".activities.NoteDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".activities.NewNoteActivity" />
         <activity android:name=".activities.NewAssessmentActivity" />
         <activity
@@ -29,7 +38,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.NewCourseActivity" />
-        <activity android:name=".activities.AssessmentDetailActivity" />
+        <activity
+            android:name=".activities.AssessmentDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

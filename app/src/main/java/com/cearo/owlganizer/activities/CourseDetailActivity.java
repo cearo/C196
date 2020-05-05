@@ -1,7 +1,10 @@
 package com.cearo.owlganizer.activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,11 +47,14 @@ import com.cearo.owlganizer.utils.listeners.ItemClickListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class CourseDetailActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener,
@@ -76,8 +83,7 @@ public class CourseDetailActivity extends AppCompatActivity
 
         VIEW_MODEL = new ViewModelProvider(this).get(CourseDetailViewModel.class);
 
-        final Toolbar TOOL_BAR = binding.courseDetailActionBar != null ?
-                binding.courseDetailActionBar : new Toolbar(this);
+        final Toolbar TOOL_BAR = binding.courseDetailActionBar;
         TOOL_BAR.inflateMenu(R.menu.set_alarm);
         TOOL_BAR.setOnMenuItemClickListener(this);
         // Reference to course status options Spinner
@@ -466,17 +472,89 @@ public class CourseDetailActivity extends AppCompatActivity
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Log.i("Menu Item click", "clicked");
-        Intent TO_ALARM_MANAGER = new Intent(this, AlarmBroadcastReceiver.class);
-        TO_ALARM_MANAGER.setAction("SET_ALARM");
+
+        final String PROMPT_TITLE = "Alarm on Course Start or End?";
+        final String PROMPT_MESSAGE = "Please choose whether this alarm " +
+                "should use the Start or End date.";
+        final String BTN_START_CHOICE = "Start Date";
+        final String BTN_END_CHOICE = "End Date";
 
         final Course CURRENT_COURSE = VIEW_MODEL.getCurrentCourse().getValue();
+        final String COURSE_NAME = CURRENT_COURSE != null
+                ? CURRENT_COURSE.getTitle() : "Empty";
 
-        final String COURSE_NAME = CURRENT_COURSE != null ? CURRENT_COURSE.getTitle() : "";
+        final AlertDialog.Builder PROMPT_BUILDER = new AlertDialog.Builder(this);
 
-        TO_ALARM_MANAGER.putExtra("NAME", COURSE_NAME);
+        PROMPT_BUILDER.setTitle(PROMPT_TITLE);
+        PROMPT_BUILDER.setMessage(PROMPT_MESSAGE);
 
-        startService(TO_ALARM_MANAGER);
+
+
+        final Intent TO_ALARM_RECEIVER = new Intent(this,
+                AlarmBroadcastReceiver.class);
+        TO_ALARM_RECEIVER.setAction("SET_ALARM");
+
+        TO_ALARM_RECEIVER.putExtra("NAME", COURSE_NAME);
+
+        final PendingIntent PENDING_INTENT = PendingIntent
+                .getBroadcast(this, 0, TO_ALARM_RECEIVER,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        final AlarmManager MANAGER = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        PROMPT_BUILDER.setPositiveButton(BTN_START_CHOICE, ((dialog, which) ->{
+
+            final LocalDate NOW = LocalDate.now();
+
+            if (MANAGER != null) {
+                if (CURRENT_COURSE != null) {
+                    final long DATE_DIFF_DAYS = ChronoUnit.DAYS.between(NOW,
+                            CURRENT_COURSE.getStartDate());
+                    final long DATE_DIFF_MILLIS = TimeUnit.DAYS.toMillis(DATE_DIFF_DAYS);
+
+                    MANAGER.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            DATE_DIFF_MILLIS, PENDING_INTENT);
+
+                    final StringBuilder FORMATTER_BUILDER = new StringBuilder();
+                    final Formatter STR_FORMATTER = new Formatter(FORMATTER_BUILDER, Locale.US);
+                    final String ALARM_SET = STR_FORMATTER.format("Alarm set for %s",
+                            CURRENT_COURSE.getStartDate().toString()).toString();
+                    final int TOAST_DURATION = Toast.LENGTH_SHORT;
+                    final Toast ALARM_SET_TOAST = Toast
+                            .makeText(this, ALARM_SET, TOAST_DURATION);
+                    ALARM_SET_TOAST.show();
+                }
+            }
+        }));
+
+        PROMPT_BUILDER.setNegativeButton(BTN_END_CHOICE, ((dialog, which) ->{
+
+            final LocalDate NOW = LocalDate.now();
+
+            if (MANAGER != null) {
+                if (CURRENT_COURSE != null) {
+                    final long DATE_DIFF_DAYS = ChronoUnit.DAYS.between(NOW,
+                            CURRENT_COURSE.getEndDate());
+                    final long DATE_DIFF_MILLIS = TimeUnit.DAYS.toMillis(DATE_DIFF_DAYS);
+                    Log.i("DATE DIFF", String.valueOf(DATE_DIFF_MILLIS));
+                    MANAGER.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            DATE_DIFF_MILLIS, PENDING_INTENT);
+                    final StringBuilder FORMATTER_BUILDER = new StringBuilder();
+                    final Formatter STR_FORMATTER = new Formatter(FORMATTER_BUILDER, Locale.US);
+                    final String ALARM_SET = STR_FORMATTER.format("Alarm set for %s",
+                            CURRENT_COURSE.getEndDate().toString()).toString();
+                    final int TOAST_DURATION = Toast.LENGTH_SHORT;
+                    final Toast ALARM_SET_TOAST = Toast
+                            .makeText(this, ALARM_SET, TOAST_DURATION);
+                    ALARM_SET_TOAST.show();
+                }
+            }
+
+
+        }));
+
+        PROMPT_BUILDER.show();
+
         return true;
     }
 }

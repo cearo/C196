@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">Owlganizer</string>
 
-    <string name="welcome_message">
-        Welcome to the Owlganizer!
-        \nPlease choose an option below:
-    </string>
-    
+    <string name="welcome_message">Welcome to the Owlganizer!
+        \nPlease choose an option below:</string>
+
     <!-- **** Notification Channel Strings **** -->
     <string name="channel_name">Owlganizer Alarm</string>
     <string name="channel_description">Notification channel for Owlganizer</string>
@@ -15,6 +13,7 @@
     <string name="end_date_label">End Date</string>
     <string name="status_label">Status</string>
     <string name="mentor_label">Mentor</string>
+    <string name="due_date_label">Due Date</string>
     <string name="term_course_list_label">Courses This Term</string>
     <string name="course_assessment_list_label">Course Assessments</string>
     <string name="assessment_type_label">Type</string>
@@ -27,6 +26,12 @@
     <string name="note_body_label">Note:</string>
     <string name="set_alarm_label">Set Alarm</string>
     <string name="send_sms_label">Send Note SMS</string>
+    <string name="sms_phone_number">Recipient Phone Number</string>
+    <string name="progress_courses_label">Courses:</string>
+    <string name="progress_assess_label">Assessments:</string>
+    <string name="progress_course_planned">Planned/In Progress:</string>
+    <string name="progress_course_complete">Completed:</string>
+    <string name="progress_course_dropped">Dropped:</string>
     <!-- **** End Form Labels **** -->
 
     <!-- **** Button Text **** -->
@@ -35,6 +40,7 @@
     <string name="button_save">Save</string>
     <string name="button_close">Close</string>
     <string name="button_delete">Delete</string>
+    <string name="button_send">Send</string>
     <!-- **** End Button Text **** -->
 
     <!-- **** Form Hints **** -->
@@ -57,7 +63,7 @@
     <string name="detail_course_start_hint">Selected Course Start Date</string>
     <string name="detail_term_end_hint">Selected Term End Date</string>
     <string name="detail_course_end_hint">Selected Course End Date</string>
-    <string name="due_date_label">Due Date</string>
+    <string name="sms_recipient_hint">Recipient phone number here</string>
     <!-- **** End Form Hints **** -->
 
 

@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.cearo.owlganizer.models.Course;
@@ -38,6 +37,9 @@ public interface CourseDao {
     // Method for deleting an existing Course object from the database.
     @Delete
     void deleteCourse(Course course);
+
+    @Query("SELECT * FROM courses")
+    LiveData<List<Course>> getAllCourses();
 
     // Method for pulling a specific course from the database by ID.
     @Query("SELECT * FROM courses WHERE course_id = :id")

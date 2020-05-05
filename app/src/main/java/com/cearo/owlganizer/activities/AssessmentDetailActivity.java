@@ -1,40 +1,51 @@
 package com.cearo.owlganizer.activities;
 
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.cearo.owlganizer.R;
 import com.cearo.owlganizer.databinding.ActivityAssessmentDetailBinding;
 import com.cearo.owlganizer.fragments.DatePickerFragment;
 import com.cearo.owlganizer.models.Assessment;
 import com.cearo.owlganizer.models.viewmodels.AssessmentViewModel;
+import com.cearo.owlganizer.utils.AlarmBroadcastReceiver;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 public class AssessmentDetailActivity extends AppCompatActivity
-        implements DatePickerDialog.OnDateSetListener, RadioGroup.OnCheckedChangeListener {
+        implements DatePickerDialog.OnDateSetListener, RadioGroup.OnCheckedChangeListener,
+        Toolbar.OnMenuItemClickListener {
     // Binding to interact with activity_assessment_detail.xml
     private ActivityAssessmentDetailBinding binding;
     // Date Format to be used throughout
@@ -52,6 +63,10 @@ public class AssessmentDetailActivity extends AppCompatActivity
 
         final LayoutInflater INFLATER = LayoutInflater.from(this);
         binding = ActivityAssessmentDetailBinding.inflate(INFLATER);
+
+        final Toolbar TOOL_BAR = binding.assessDetailActionBar;
+        TOOL_BAR.inflateMenu(R.menu.set_alarm);
+        TOOL_BAR.setOnMenuItemClickListener(this);
         // AssessmentViewModel
         VIEW_MODEL = new ViewModelProvider(this).get(AssessmentViewModel.class);
         // Intent from CourseDetailActivity
@@ -255,5 +270,43 @@ public class AssessmentDetailActivity extends AppCompatActivity
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         final boolean IS_CHECKED_CHANGED = !(checkedId == RADIO_SELECTED.getId());
         binding.detailAssessmentSave.setEnabled(IS_CHECKED_CHANGED);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        final Assessment CURRENT_ASSESSMENT = VIEW_MODEL.getCURRENT_ASSESSMENT().getValue();
+        final String ASSESS_NAME = CURRENT_ASSESSMENT != null
+                ? CURRENT_ASSESSMENT.getTitle() : "Empty";
+        final LocalDate ASSESS_DUE_DATE = CURRENT_ASSESSMENT != null
+                ? CURRENT_ASSESSMENT.getDueDate() : null;
+        final LocalDate NOW = LocalDate.now();
+
+        final Intent TO_ALARM_RECEIVER = new Intent(this,
+                AlarmBroadcastReceiver.class);
+        TO_ALARM_RECEIVER.setAction("SET_ALARM");
+        TO_ALARM_RECEIVER.putExtra("NAME", ASSESS_NAME);
+
+        final PendingIntent PENDING_INTENT = PendingIntent.getBroadcast(this, 0,
+                TO_ALARM_RECEIVER, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        final AlarmManager MANAGER = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (ASSESS_DUE_DATE != null && MANAGER != null) {
+            final long DATE_DIFF_DAYS = ChronoUnit.DAYS.between(NOW, ASSESS_DUE_DATE);
+            final long DATE_DIFF_MILLIS = TimeUnit.DAYS.toMillis(DATE_DIFF_DAYS);
+
+            MANAGER.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    DATE_DIFF_MILLIS, PENDING_INTENT);
+            final StringBuilder FORMATTER_BUILDER = new StringBuilder();
+            final Formatter STR_FORMATTER = new Formatter(FORMATTER_BUILDER, Locale.US);
+            final String ALARM_SET = STR_FORMATTER.format("Alarm set for %s",
+                    ASSESS_DUE_DATE.toString()).toString();
+            final int TOAST_DURATION = Toast.LENGTH_SHORT;
+            final Toast ALARM_SET_TOAST = Toast.makeText(this, ALARM_SET, TOAST_DURATION);
+            ALARM_SET_TOAST.show();
+        }
+
+        return true;
     }
 }

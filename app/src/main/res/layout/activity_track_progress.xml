@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.TrackProgressActivity">
+
+    <TextView
+        android:id="@+id/progress_courses_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:text="@string/progress_courses_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/progress_course_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="14dp"
+        android:text="@string/progress_course_complete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_course_planned" />
+
+    <TextView
+        android:id="@+id/progress_course_planned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/progress_course_planned"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_courses_label" />
+
+    <TextView
+        android:id="@+id/progress_course_dropped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="13dp"
+        android:text="@string/progress_course_dropped"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_course_complete" />
+
+    <TextView
+        android:id="@+id/progress_assess_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:text="@string/progress_assess_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_course_dropped" />
+
+    <TextView
+        android:id="@+id/progress_assess_obj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/objective_assess_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_assess_label" />
+
+    <TextView
+        android:id="@+id/progress_assess_perform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/performance_assess_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_assess_obj" />
+
+    <TextView
+        android:id="@+id/prrogress_planned_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="77dp"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/progress_course_planned"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/progress_completed_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="13dp"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/progress_course_complete"
+        app:layout_constraintTop_toBottomOf="@+id/prrogress_planned_count" />
+
+    <TextView
+        android:id="@+id/progress_dropped_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="87dp"
+        android:layout_marginTop="13dp"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/progress_course_dropped"
+        app:layout_constraintTop_toBottomOf="@+id/progress_completed_count" />
+
+    <TextView
+        android:id="@+id/progress_obj_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="87dp"
+        android:layout_marginTop="82dp"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/progress_assess_obj"
+        app:layout_constraintTop_toBottomOf="@+id/progress_dropped_count" />
+
+    <TextView
+        android:id="@+id/progress_perform_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="16dp"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/progress_assess_perform"
+        app:layout_constraintTop_toBottomOf="@+id/progress_obj_count" />
+</androidx.constraintlayout.widget.ConstraintLayout>

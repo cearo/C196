@@ -29,6 +29,10 @@ public class NoteViewModel extends AndroidViewModel {
                 NOTE_REPO::getNoteById);
     }
 
+    public LiveData<Note> getCURRENT_NOTE() {
+        return CURRENT_NOTE;
+    }
+
     public LiveData<Note> getNoteById(long id) {
 
         if (id != 0) {

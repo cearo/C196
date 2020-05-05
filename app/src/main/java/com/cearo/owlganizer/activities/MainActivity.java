@@ -3,27 +3,13 @@ package com.cearo.owlganizer.activities;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.cearo.owlganizer.R;
-import com.cearo.owlganizer.adapters.recyclerviews.TermAdapter;
 import com.cearo.owlganizer.databinding.ActivityMainBinding;
-import com.cearo.owlganizer.models.Mentor;
-import com.cearo.owlganizer.models.Term;
-import com.cearo.owlganizer.models.viewmodels.TermViewModel;
-import com.cearo.owlganizer.utils.Constants;
-import com.cearo.owlganizer.utils.listeners.ItemClickListener;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
         BINDING.manageTerms.setOnClickListener(view -> {
             final Intent TO_TERM_LIST = new Intent(this, TermListActivity.class);
             startActivity(TO_TERM_LIST);
+        });
+        BINDING.trackProgress.setOnClickListener(view -> {
+            final Intent TO_TRACK_PROGRESS = new Intent(this,
+                    TrackProgressActivity.class);
+            startActivity(TO_TRACK_PROGRESS);
         });
         createNotificationChannel();
         setContentView(BINDING.getRoot());

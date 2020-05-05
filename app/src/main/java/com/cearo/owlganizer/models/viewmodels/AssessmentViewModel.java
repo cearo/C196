@@ -29,6 +29,10 @@ public class AssessmentViewModel extends AndroidViewModel {
                 ASSESS_REPO::getAssessmentById);
     }
 
+    public LiveData<Assessment> getCURRENT_ASSESSMENT() {
+        return CURRENT_ASSESSMENT;
+    }
+
     public LiveData<Assessment> getAssessmentById(long id) {
 
         if (id != 0) {

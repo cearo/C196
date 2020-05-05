@@ -1,26 +1,31 @@
 package com.cearo.owlganizer.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.cearo.owlganizer.R;
 import com.cearo.owlganizer.databinding.ActivityNoteDetailBinding;
 import com.cearo.owlganizer.models.Note;
 import com.cearo.owlganizer.models.viewmodels.NoteViewModel;
 
-public class NoteDetailActivity extends AppCompatActivity {
+public class NoteDetailActivity extends AppCompatActivity
+        implements Toolbar.OnMenuItemClickListener {
     // Binding reference for activity_note_detail.xml
-    ActivityNoteDetailBinding binding;
+    private ActivityNoteDetailBinding binding;
+
+    private NoteViewModel VIEW_MODEL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,11 @@ public class NoteDetailActivity extends AppCompatActivity {
         // Initializing the binding
         LayoutInflater INFLATER = LayoutInflater.from(this);
         binding = ActivityNoteDetailBinding.inflate(INFLATER);
+
+        final Toolbar TOOL_BAR = binding.noteDetailActionBar;
+        TOOL_BAR.inflateMenu(R.menu.send_text);
+        TOOL_BAR.setOnMenuItemClickListener(this);
+
         // Getting form field references
         final EditText NOTE_TITLE = binding.noteDetailTitle;
         final EditText NOTE_MESSAGE_BODY = binding.noteDetailBody;
@@ -38,7 +48,7 @@ public class NoteDetailActivity extends AppCompatActivity {
         final long NOTE_SELECTED_ID = FROM_COURSE_DETAIL
                 .getLongExtra("noteId", 0);
         // Initializing the view model
-        final NoteViewModel VIEW_MODEL = new ViewModelProvider(this)
+        VIEW_MODEL = new ViewModelProvider(this)
                 .get(NoteViewModel.class);
         // Passing the ID of the chosen Note into the view model and obtaining database result
         final LiveData<Note> LIVE_CURRENT_NOTE = VIEW_MODEL.getNoteById(NOTE_SELECTED_ID);
@@ -171,6 +181,23 @@ public class NoteDetailActivity extends AppCompatActivity {
             });
         }
         setContentView(binding.getRoot());
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        final Note CURRENT_NOTE = VIEW_MODEL.getCURRENT_NOTE().getValue();
+        final String NOTE_TITLE = CURRENT_NOTE != null
+                ? CURRENT_NOTE.getTitle() : null;
+        final String NOTE_BODY = CURRENT_NOTE != null
+                ? CURRENT_NOTE.getMessageBody() : null;
+
+        if (NOTE_TITLE != null) {
+            final Intent TO_SEND_SMS = new Intent(this, SendSmsActivity.class);
+            TO_SEND_SMS.putExtra("noteTitle", NOTE_TITLE);
+            TO_SEND_SMS.putExtra("noteBody", NOTE_BODY);
+            startActivity(TO_SEND_SMS);
+        }
+        return false;
     }
 }
 
